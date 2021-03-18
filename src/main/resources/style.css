@@ -1,0 +1,35 @@
+.time-picker-simple {
+    display: grid;
+    /*width: 10%; !* Better width calculation *!*/
+    grid-template-columns: minmax(80px, 5%) minmax(80px, 5%) minmax(80px, 5%);
+    /*grid-template-columns: 2fr 2fr 1fr;*/
+    grid-template-rows: auto 1fr ;
+    grid-template-areas:
+            "hour       minute      amOrPm";
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid white;
+}
+
+.hour { grid-area: hour; }
+.minute { grid-area: minute; }
+.amOrPm { grid-area: amOrPm; }
+
+.wheel {
+    display: grid;
+    place-items: center;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr ;
+    /*grid-template-columns: minmax(80px, 150px);*/
+    grid-template-areas:
+            "tp-inc"
+            "tp-display"
+            "tp-dec";
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid white;
+}
+
+.tp-inc { grid-area: tp-inc; }
+.tp-display { grid-area: tp-display; }
+.tp-dec { grid-area: tp-dec; }
