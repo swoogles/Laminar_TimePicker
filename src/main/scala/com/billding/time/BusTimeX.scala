@@ -40,6 +40,7 @@ object Time {
  */
 
 sealed trait DayTime
+
 object DayTime {
   case object AM extends DayTime
   case object PM extends DayTime
@@ -52,13 +53,18 @@ object TimeShit {
   def basicUpArrow() =
     span("+")
 
-  val fancyUpArrowThatShouldBeProvidedByEndUser =
+  def fancyUpArrowThatShouldBeProvidedByEndUser() =
     img(
       cls := "glyphicon",
       src := "/src/main/resources/icons/glyphicons-basic-222-chevron-up.svg",
     )
 
-  def wheel($signal: Signal[Any], updater: Int => Unit, delta: Int, upButtonRep: HtmlElement): Div =
+  def wheel(
+    $signal: Signal[Any],
+    updater: Int => Unit,
+    delta: Int,
+    upButtonRep: HtmlElement,
+  ): Div =
     div(
       cls("wheel"),
       button(
@@ -66,7 +72,7 @@ object TimeShit {
           "tp-inc",
         ),
         onClick.mapTo(delta) --> updater,
-        upButtonRep
+        upButtonRep,
       ),
       div(
         cls := "tp-display",
@@ -79,13 +85,14 @@ object TimeShit {
           cls := "glyphicon",
           src := "/src/main/resources/icons/glyphicons-basic-221-chevron-down.svg",
         ),
-      )
+      ),
     )
 
   def activeUpArrow() =
     basicUpArrow()
 
   object TimePicker {
+
     val style =
       """
         |<style>
@@ -102,7 +109,10 @@ object TimeShit {
         |""".stripMargin
     dom.document.querySelector("head").innerHTML += style
 
-    def apply(initialTime: String) = {
+    def apply(
+      initialTime: String,
+      incrementRep: HtmlElement,
+    ) = {
       val timeVar: Var[BusTime] = Var(BusTime(initialTime))
       val updater =
         (minutes: Int) => timeVar.update(_.plusMinutes(minutes))
@@ -110,19 +120,19 @@ object TimeShit {
       div(
         cls := "time-picker-simple",
         wheel($signal = timeVar.signal.map(_.hours12),
-          updater = updater,
-          delta = 60,
-          activeUpArrow())
+              updater = updater,
+              delta = 60,
+              incrementRep)
           .amend(cls("hour")),
         wheel($signal = timeVar.signal.map(_.paddedMinutes),
-          updater = updater,
-          delta = 5,
-          activeUpArrow())
+              updater = updater,
+              delta = 5,
+              activeUpArrow())
           .amend(cls("minute")),
         wheel($signal = timeVar.signal.map(_.dayTime),
-          updater = updater,
-          delta = 60 * 12,
-          activeUpArrow())
+              updater = updater,
+              delta = 60 * 12,
+              activeUpArrow())
           .amend(cls("amOrPm")),
       )
     }
@@ -130,7 +140,7 @@ object TimeShit {
 
   val body: Div =
     div(
-      TimePicker("08:00"),
-      TimePicker("14:00")
+      TimePicker("08:00", basicUpArrow()),
+      TimePicker("14:00", fancyUpArrowThatShouldBeProvidedByEndUser()),
     )
 }

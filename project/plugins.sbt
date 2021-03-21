@@ -4,3 +4,4 @@ addSbtPlugin("ch.epfl.scala" % "sbt-web-scalajs-bundler" % "0.20.0")
 addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.2")
 addSbtPlugin("au.com.onegeek" %% "sbt-dotenv" % "2.1.146")
 addSbtPlugin("com.codecommit" % "sbt-github-packages" % "0.5.0")
+//
