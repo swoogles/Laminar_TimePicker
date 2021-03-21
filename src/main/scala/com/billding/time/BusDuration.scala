@@ -1,9 +1,7 @@
 package com.billding.time
 
-import java.time.Duration
-
-class BusDuration(duration: Duration) {
-  val toMinutes: Long = duration.toMinutes
+case class BusDuration(minutes: Minutes) {
+  val toMinutes: Long = minutes.value
 
   def times(int: Int) =
     BusDuration.ofMinutes(toMinutes.toInt * int)
@@ -27,9 +25,13 @@ class BusDuration(duration: Duration) {
 }
 
 object BusDuration {
+  def between(a: BusTime, b: BusTime) =
+    BusDuration(
+      Minutes(math.abs(a.localTime.m.value - b.localTime.m.value).toInt)
+    )
 
   def ofMinutes(minutes: Int) =
-    new BusDuration(java.time.Duration.ofMinutes(minutes))
+    new BusDuration(Minutes(minutes))
 
   class DurationFriendlyInt(int: Int) {
     def minutes: BusDuration = BusDuration.ofMinutes(int)

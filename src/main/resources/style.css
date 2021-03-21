@@ -1,8 +1,19 @@
+.glyphicon {
+    height: 1em;
+    width: 1em;
+    /*vertical-align: middle;*/
+    /*display: table-cell;*/
+}
+
 .time-picker-simple {
+    font-size: 1.5rem;
+
+    background-color: lightblue;
+    width: 100%;
+    min-width: 150px;
+    max-width: 450px;
     display: grid;
-    /*width: 10%; !* Better width calculation *!*/
-    grid-template-columns: minmax(80px, 5%) minmax(80px, 5%) minmax(80px, 5%);
-    /*grid-template-columns: 2fr 2fr 1fr;*/
+    grid-template-columns: minmax(80px, 10%) minmax(80px, 10%) minmax(80px, 10%);
     grid-template-rows: auto 1fr ;
     grid-template-areas:
             "hour       minute      amOrPm";
@@ -16,6 +27,7 @@
 .amOrPm { grid-area: amOrPm; }
 
 .wheel {
+    background-color: pink;
     display: grid;
     place-items: center;
     grid-template-columns: 1fr;

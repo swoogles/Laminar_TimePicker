@@ -11,6 +11,20 @@ object App {
 //      val (pickedTime: L.Signal[BusTime], timePicker: Div) =
 //        TimePicker.TimePicker(BusTime("7:20"))
       println("doing stuff?")
+      val style =
+      """
+        |<style>
+        |body {
+        |  background-color: linen;
+        |}
+        |
+        |h1 {
+        |  color: maroon;
+        |  margin-left: 40px;
+        |}
+        |
+        |""".stripMargin
+      dom.document.querySelector("head").innerHTML += style
       val appContainer = dom.document.querySelector("#laminarApp")
       val appElement =
         div(

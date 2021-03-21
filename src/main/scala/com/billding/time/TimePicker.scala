@@ -1,19 +1,20 @@
-import com.billding.time.BusTime
+package com.billding.time
+
 import com.raquo.laminar.api.L._
 
 /**
-  * Options:
-  *  Styling:
-  *    - In-line that shit
-  *    - Load a CSS snippet when the component is mounted
-  *
-  *  UX
-  *    - Roll over AM/PM when adjusting hours
-  *    - Keep scrolling on long press
-  *
-  *
-  *  Anything else that springs to mind
-  */
+ * Options:
+ *  Styling:
+ *    - In-line that shit
+ *    - Load a CSS snippet when the component is mounted
+ *
+ *  UX
+ *    - Roll over AM/PM when adjusting hours
+ *    - Keep scrolling on long press
+ *
+ *
+ *  Anything else that springs to mind
+ */
 object TimePicker {
 
   sealed trait DAY_TIME
@@ -23,8 +24,8 @@ object TimePicker {
   case class Time()
 
   def Toggler(
-    initialValue: DAY_TIME,
-  ): (Div, Signal[DAY_TIME]) = {
+               initialValue: DAY_TIME,
+             ): (Div, Signal[DAY_TIME]) = {
     val updates = new EventBus[Unit]
     val $value: Var[DAY_TIME] = Var(initialValue)
     val newNumberValues: EventStream[DAY_TIME] =
@@ -46,7 +47,7 @@ object TimePicker {
           onClick.preventDefault.map(_ => ()) --> updates,
           img(
             cls := "glyphicon",
-            src := "/src/main/resources/icons/glyphicons-basic-222-chevron-up.svg",
+            src := "/glyphicons/svg/individual-svg/glyphicons-basic-222-chevron-up.svg",
           ),
         ),
         div(
@@ -58,7 +59,7 @@ object TimePicker {
           onClick.preventDefault.map(_ => ()) --> updates,
           img(
             cls := "glyphicon",
-            src := "/src/main/resources/icons/glyphicons-basic-221-chevron-down.svg",
+            src := "/glyphicons/svg/individual-svg/glyphicons-basic-221-chevron-down.svg",
           ),
         ),
         newNumberValues --> $value,
@@ -69,12 +70,12 @@ object TimePicker {
   }
 
   def NumberPicker(
-    initialValue: Int,
-    deltaValue: Int,
-    minValue: Int,
-    maxValue: Int,
-    sectionName: String,
-  ) = {
+                    initialValue: Int,
+                    deltaValue: Int,
+                    minValue: Int,
+                    maxValue: Int,
+                    sectionName: String,
+                  ) = {
     val $numberX: Var[Int] = Var(initialValue)
 
     val updates = new EventBus[Int]
@@ -104,7 +105,7 @@ object TimePicker {
           onClick.preventDefault.map(_ => deltaValue) --> updates,
           img(
             cls := "glyphicon",
-            src := "/src/main/resources/icons/glyphicons-basic-222-chevron-up.svg",
+            src := "/glyphicons/svg/individual-svg/glyphicons-basic-222-chevron-up.svg",
           ),
         ),
         div(
@@ -116,7 +117,7 @@ object TimePicker {
           onClick.preventDefault.map(_ => -deltaValue) --> updates,
           img(
             cls := "glyphicon",
-            src := "/src/main/resources/icons/glyphicons-basic-221-chevron-down.svg",
+            src := "/glyphicons/svg/individual-svg/glyphicons-basic-221-chevron-down.svg",
           ),
         ),
         newNumberValues --> $numberX,
@@ -127,21 +128,21 @@ object TimePicker {
   }
 
   def TimePicker(
-    time: BusTime,
-  ) = {
+                  time: BusTime,
+                ) = {
 
     val (hourPicker, hourS) =
       NumberPicker(initialValue = time.hours12,
-                   deltaValue = 1,
-                   minValue = 1,
-                   maxValue = 12,
-                   sectionName = "hour")
+        deltaValue = 1,
+        minValue = 1,
+        maxValue = 12,
+        sectionName = "hour")
     val (minutePicker, minuteS) =
       NumberPicker(initialValue = time.minutes,
-                   deltaValue = 10,
-                   minValue = 0,
-                   maxValue = 59,
-                   sectionName = "minute")
+        deltaValue = 10,
+        minValue = 0,
+        maxValue = 59,
+        sectionName = "minute")
     val (amPmToggler, amOrPm) = Toggler(AM)
 
     val fullTime: Signal[BusTime] =
@@ -175,12 +176,12 @@ object TimePicker {
         }
 
     (fullTime,
-     div(
-       cls := "time-picker-simple",
-       hourPicker,
-       minutePicker,
-       amPmToggler,
-     ))
+      div(
+        cls := "time-picker-simple",
+        hourPicker,
+        minutePicker,
+        amPmToggler,
+      ))
   }
 
 }

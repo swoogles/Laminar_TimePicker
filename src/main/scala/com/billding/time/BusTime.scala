@@ -1,18 +1,37 @@
 package com.billding.time
 
-import java.time.format.{DateTimeFormatter, DateTimeParseException}
-import java.time.temporal.ChronoUnit
-import java.time.{Duration, LocalTime}
 
-import scala.util.Try
+case class Minutes(value: Int) {
+  def modDay(): Minutes = Minutes(this.value % (24*60))
+}
 
-class BusTime(localTime: LocalTime) {
-  val hours: Int = localTime.getHour
+case class ModMinutes private(m: Minutes) {
+  def /(other: Int) = m.value / other
+  def isBefore(other: ModMinutes): Boolean = m.value < other.m.value
+  def isAfter(other: ModMinutes): Boolean = m.value > other.m.value
+}
+
+object ModMinutes {
+  def safe(minutes: Minutes): ModMinutes =
+    ModMinutes(Minutes(minutes.value % (24*60)))
+}
+
+
+
+case class BusTime private(localTime: ModMinutes /*numMinutes*/ ) {
+  println("making a bus time")
+  val hours: Int = localTime / 60
   val hours12: Int =
     if( hours == 0 ||  hours == 12)
       12
     else (hours % 12)
-  val minutes: Int = localTime.getMinute
+  val minutes = localTime.m.value % 60
+
+  val dayTime =
+    if(hours > 11)
+      DayTime.PM
+    else
+      DayTime.AM
 
   def isBefore(busTime: BusTime) = {
     if (
@@ -23,7 +42,7 @@ class BusTime(localTime: LocalTime) {
           && !busTime.isLikelyEarlyMorningRatherThanLateNight
         )
     ) {
-      truncatedToMinutes.isBefore(busTime.truncatedToMinutes)
+      localTime.isBefore(busTime.localTime)
     } else {
       if (this.isLikelyEarlyMorningRatherThanLateNight)
         1
@@ -33,100 +52,90 @@ class BusTime(localTime: LocalTime) {
     }
 
 
-    truncatedToMinutes.isBefore(busTime.truncatedToMinutes)
+    localTime.isBefore(busTime.localTime)
   }
 
   def isAfter(busTime: BusTime) =
-    truncatedToMinutes.isAfter(busTime.truncatedToMinutes)
+    localTime.isAfter(busTime.localTime)
 
   def isBeforeOrEqualTo(busTime: BusTime) =
-    truncatedToMinutes.isBefore(busTime.truncatedToMinutes) ||
-      truncatedToMinutes.equals(busTime.truncatedToMinutes)
+    localTime.isBefore(busTime.localTime) ||
+      localTime.equals(busTime.localTime)
 
   def isAfterOrEqualTo(busTime: BusTime) =
-    truncatedToMinutes.isAfter(busTime.truncatedToMinutes) ||
-      truncatedToMinutes.equals(busTime.truncatedToMinutes)
+    localTime.isAfter(busTime.localTime) ||
+      localTime.equals(busTime.localTime)
 
-  private val truncatedToMinutes =
-    localTime.truncatedTo(ChronoUnit.MINUTES)
 
   def between(busTime: BusTime): BusDuration =
-    new BusDuration(
-      Duration
+    BusDuration
         .between(
-          busTime.truncatedToMinutes,
-          truncatedToMinutes,
+          busTime,
+          this,
         )
-        .abs(),
-    )
 
-  def plusMinutes(minutes: Int) =
-    new BusTime(localTime.plusMinutes(minutes))
+  def plusMinutes(minutes: Int) = {
+    println("recursing?")
+    BusTime(ModMinutes.safe(Minutes(localTime.m.value + minutes)))
+  }
 
   def plus(busDuration: BusDuration) =
-    new BusTime(localTime.plusMinutes(busDuration.toMinutes))
+    plusMinutes(busDuration.minutes.value)
 
-  private val dateFormat = DateTimeFormatter.ofPattern("HH:mm")
-
-  override val toString: String = localTime.format(dateFormat)
+  override val toString: String = {
+    val paddedHours =
+      if(hours12 < 10)
+        s"0$hours12"
+      else
+        hours12
+    val paddedMinutes =
+      if(minutes < 10)
+        s"0$minutes"
+      else
+        minutes
+    s"$paddedHours:$paddedMinutes $dayTime"
+  }
 
   private val dumbAmericanDateFormat =
-    DateTimeFormatter.ofPattern("h:mm a") // TODO Fuck! Why aren't you showing AM/PM???
+    toString
 
   val toDumbAmericanString: String =
-    localTime.format(dumbAmericanDateFormat) + "!"
+    toString
 
-  val isLikelyEarlyMorningRatherThanLateNight: Boolean =
-    localTime.isAfter(LocalTime.parse("04:00:00"))
+  val beginningOfMorningRoutesInHours = 60 * 4
+
+  def isLikelyEarlyMorningRatherThanLateNight: Boolean =
+    this.isAfter(BusTime(ModMinutes.safe(Minutes(beginningOfMorningRoutesInHours))))
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[BusTime]
 
   override def equals(other: Any): Boolean = other match {
     case that: BusTime =>
       (that.canEqual(this)) &&
-        truncatedToMinutes == that.truncatedToMinutes
+        localTime == that.localTime
     case _ => false
   }
 
   override def hashCode(): Int = {
-    val state = Seq(truncatedToMinutes)
+    val state = Seq(localTime)
     state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
   }
 }
 
 object BusTime {
-  private val dateFormat = DateTimeFormatter.ofPattern("HH:mm")
+  def apply(raw: String): BusTime =
+    BusTime(ModMinutes.safe(Minutes(parseMinutes(raw))))
 
-  def parseIdeal(raw: String): Try[BusTime] =
-    Try(new BusTime(LocalTime.parse(raw, dateFormat)))
-
-  def apply(raw: String) =
-    parse(raw)
-
-  def newParse(raw: String): Try[BusTime] =
-    parseIdeal(raw).orElse(
-      Try(new BusTime(LocalTime.parse("0" + raw)))
-        .orElse(Try(new BusTime(LocalTime.parse(raw)))),
-    )
-
-  def parse(raw: String) =
-    try {
-      new BusTime(LocalTime.parse(raw, dateFormat))
-    } catch {
-      case ex: DateTimeParseException =>
-        try {
-          new BusTime(LocalTime.parse("0" + raw, dateFormat))
-        } catch {
-          case ex: DateTimeParseException =>
-            new BusTime(LocalTime.parse(raw))
-        }
-    }
+  def parseMinutes(raw: String) = {
+    val Array(hours, minutes) = raw.split(":")
+    hours.toInt * 60 + minutes.toInt
+  }
 
   def catchableBus(now: BusTime, goal: BusTime) =
-    goal.truncatedToMinutes
-      .isAfter(now.truncatedToMinutes) ||
-      goal.truncatedToMinutes
-        .equals(now.truncatedToMinutes)
+    goal.localTime
+      .isAfter(now.localTime) ||
+      goal.localTime
+        .equals(now.localTime)
 
   implicit val busTimeOrdering: Ordering[BusTime] =
     (x: BusTime, y: BusTime) => {
@@ -138,7 +147,7 @@ object BusTime {
             && !y.isLikelyEarlyMorningRatherThanLateNight
           )
       ) {
-        x.truncatedToMinutes.compareTo(y.truncatedToMinutes)
+        x.localTime.m.value.compareTo(y.localTime.m.value)
       } else {
         if (x.isLikelyEarlyMorningRatherThanLateNight)
           -1
