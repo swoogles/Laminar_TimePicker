@@ -29,21 +29,20 @@ object ModMinutes {
 
 case class BusTime private (
   localTime: ModMinutes /*numMinutes*/) {
-  println("making a bus time")
-  val hours: Int = localTime / 60
+  val hours24: Int = localTime / 60
 
   val hours12: Int =
-    if (hours == 0 || hours == 12)
+    if (hours24 == 0 || hours24 == 12)
       12
-    else hours % 12
+    else hours24 % 12
 
   val minutes = localTime.m.value % 60
 
-  val dayTime =
-    if (hours > 11)
-      DayTime.PM
+  val dayTime: String =
+    if (hours24 > 11)
+      DayTime.PM.toString
     else
-      DayTime.AM
+      DayTime.AM.toString
 
   def isBefore(
     busTime: BusTime,
@@ -171,3 +170,10 @@ object BusTime {
         1
 
 }
+private sealed trait DayTime
+
+private object DayTime {
+  case object AM extends DayTime
+  case object PM extends DayTime
+}
+
