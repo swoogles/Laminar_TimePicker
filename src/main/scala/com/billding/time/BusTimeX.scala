@@ -1,5 +1,7 @@
 package com.billding.time
 
+import org.scalajs.dom
+
 /*
 case class Time(private val mins: Int) {
   def addMinutes(delta: Int): Time =
@@ -28,13 +30,6 @@ case class Time(private val mins: Int) {
 
  */
 
-sealed trait Direction
-
-object Direction {
-  case object Up   extends Direction
-  case object Down extends Direction
-}
-
 /*
 object Time {
   val highNoon: Time = Time(12 * 60)
@@ -44,18 +39,14 @@ object Time {
 
  */
 
-sealed trait DayTime {
-  override def toString: String = this match {
-    case DayTime.AM => "AM"
-    case DayTime.PM => "PM"
-  }
-}
+sealed trait DayTime
 object DayTime {
   case object AM extends DayTime
   case object PM extends DayTime
 }
 
 object TimeShit {
+
   import com.raquo.laminar.api.L._
 
   def basicUpArrow() =
@@ -67,7 +58,7 @@ object TimeShit {
       src := "/src/main/resources/icons/glyphicons-basic-222-chevron-up.svg",
     )
 
-  def wheel($signal: Signal[String], updater: Int => Unit, delta: Int, upButtonRep: HtmlElement): Div =
+  def wheel($signal: Signal[Any], updater: Int => Unit, delta: Int, upButtonRep: HtmlElement): Div =
     div(
       cls("wheel"),
       button(
@@ -91,37 +82,55 @@ object TimeShit {
       )
     )
 
-  val timeVar: Var[BusTime] = Var(BusTime("12:00"))
-
-  val updater =
-    (minutes: Int) => timeVar.update(_.plusMinutes(minutes))
-
   def activeUpArrow() =
     basicUpArrow()
 
-  val body: Div =
-    div(
-      child.text <-- timeVar.signal.map { time =>
-        time.toDumbAmericanString
-      },
-      hr(),
+  object TimePicker {
+    val style =
+      """
+        |<style>
+        |body {
+        |  background-color: linen;
+        |}
+        |
+        |h1 {
+        |  color: maroon;
+        |  margin-left: 40px;
+        |}
+        |
+        |</style>
+        |""".stripMargin
+    dom.document.querySelector("head").innerHTML += style
+
+    def apply(initialTime: String) = {
+      val timeVar: Var[BusTime] = Var(BusTime(initialTime))
+      val updater =
+        (minutes: Int) => timeVar.update(_.plusMinutes(minutes))
+
       div(
         cls := "time-picker-simple",
-        wheel($signal = timeVar.signal.map(_.hours12.toString),
+        wheel($signal = timeVar.signal.map(_.hours12),
           updater = updater,
           delta = 60,
           activeUpArrow())
           .amend(cls("hour")),
-        wheel($signal = timeVar.signal.map(_.minutes.toString),
+        wheel($signal = timeVar.signal.map(_.paddedMinutes),
           updater = updater,
           delta = 5,
           activeUpArrow())
           .amend(cls("minute")),
-        wheel($signal = timeVar.signal.map(_.dayTime.toString),
+        wheel($signal = timeVar.signal.map(_.dayTime),
           updater = updater,
-          delta = 60*12,
+          delta = 60 * 12,
           activeUpArrow())
           .amend(cls("amOrPm")),
       )
+    }
+  }
+
+  val body: Div =
+    div(
+      TimePicker("08:00"),
+      TimePicker("14:00")
     )
 }

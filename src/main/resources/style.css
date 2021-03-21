@@ -1,8 +1,7 @@
 .glyphicon {
     height: 1em;
     width: 1em;
-    /*vertical-align: middle;*/
-    /*display: table-cell;*/
+    vertical-align: middle;
 }
 
 .time-picker-simple {
@@ -13,13 +12,11 @@
     min-width: 150px;
     max-width: 450px;
     display: grid;
-    grid-template-columns: minmax(80px, 10%) minmax(80px, 10%) minmax(80px, 10%);
+    grid-template-columns: minmax(2.5rem, 30%) minmax(2.5rem, 30%) minmax(2.5rem, 30%);
     grid-template-rows: auto 1fr ;
     grid-template-areas:
             "hour       minute      amOrPm";
-    padding-top: 5px;
-    padding-bottom: 5px;
-    border-bottom: 1px solid white;
+    padding: 5px;
 }
 
 .hour { grid-area: hour; }
@@ -37,9 +34,7 @@
             "tp-inc"
             "tp-display"
             "tp-dec";
-    padding-top: 5px;
-    padding-bottom: 5px;
-    border-bottom: 1px solid white;
+    padding: 5px;
 }
 
 .tp-inc { grid-area: tp-inc; }

@@ -25,6 +25,7 @@ case class BusTime private(localTime: ModMinutes /*numMinutes*/ ) {
     if( hours == 0 ||  hours == 12)
       12
     else (hours % 12)
+
   val minutes = localTime.m.value % 60
 
   val dayTime =
@@ -82,17 +83,18 @@ case class BusTime private(localTime: ModMinutes /*numMinutes*/ ) {
   def plus(busDuration: BusDuration) =
     plusMinutes(busDuration.minutes.value)
 
+  val paddedMinutes: String =
+    if(minutes < 10)
+      s"0$minutes"
+    else
+      minutes.toString
+
   override val toString: String = {
     val paddedHours =
       if(hours12 < 10)
         s"0$hours12"
       else
         hours12
-    val paddedMinutes =
-      if(minutes < 10)
-        s"0$minutes"
-      else
-        minutes
     s"$paddedHours:$paddedMinutes $dayTime"
   }
 
@@ -138,7 +140,7 @@ object BusTime {
         .equals(now.localTime)
 
   implicit val busTimeOrdering: Ordering[BusTime] =
-    (x: BusTime, y: BusTime) => {
+    (x: BusTime, y: BusTime) =>
       if (
         (x.isLikelyEarlyMorningRatherThanLateNight
           && y.isLikelyEarlyMorningRatherThanLateNight)
@@ -146,15 +148,12 @@ object BusTime {
           !x.isLikelyEarlyMorningRatherThanLateNight
             && !y.isLikelyEarlyMorningRatherThanLateNight
           )
-      ) {
+      )
         x.localTime.m.value.compareTo(y.localTime.m.value)
-      } else {
+      else
         if (x.isLikelyEarlyMorningRatherThanLateNight)
           -1
         else
           1
 
-      }
-
-    }
 }
