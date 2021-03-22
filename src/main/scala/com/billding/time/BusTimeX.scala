@@ -44,10 +44,16 @@ object TimeShit {
   import com.raquo.laminar.api.L._
 
   def basicUpArrow() =
-    span("+")
+    div("+")
 
   def basicDownArrow() =
-    span("-")
+    div("-")
+
+  def basicIncVerbiage() =
+    span("Inc")
+
+  def basicDownVerbiage() =
+    span("Dec")
 
   def fancyUpArrowThatShouldBeProvidedByEndUser() =
     img(
@@ -66,9 +72,18 @@ object TimeShit {
 
   val body: Div =
     div(
-      TimePicker("08:03", basicUpArrow(), basicDownArrow()),
+      TimePicker("08:03", basicUpArrow(), basicDownArrow()) match {
+        case TimePicker(component, time) =>
+          div(
+            child.text <-- time.map("Exposed time: " + _ ) ,
+            component
+          )
+      },
       TimePicker("14:00",
         fancyUpArrowThatShouldBeProvidedByEndUser,
-        fancyDownArrowThatShouldBeProvidedByEndUser),
+        fancyDownArrowThatShouldBeProvidedByEndUser).component,
+      TimePicker("21:45",
+        basicIncVerbiage(),
+        basicDownVerbiage()).component
     )
 }

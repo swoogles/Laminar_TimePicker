@@ -2,8 +2,14 @@ package com.billding.time
 
 import org.scalajs.dom
 
+import com.raquo.laminar.api.L._
+
+case class TimePicker(
+                     component: Div,
+                     $time: Signal[String]
+                     )
+
 object TimePicker {
-  import com.raquo.laminar.api.L._
 
   val style =
     """
@@ -48,15 +54,26 @@ object TimePicker {
       ),
     )
 
+  private def basicUpArrow() =
+    div("+")
+
+  private def basicDownArrow() =
+    div("-")
+
+  def withPlusMinusButtons(
+           initialTime: String,
+           ) =
+    apply(initialTime, basicUpArrow(), basicDownArrow())
+
   def apply(
              initialTime: String,
              incrementRep: => HtmlElement,
              decrementRep: => HtmlElement,
-           ) = {
+           ): TimePicker = {
     val timeVar: Var[BusTime] = Var(BusTime(initialTime))
     val updater =
       (minutes: Int) => timeVar.update(_.plusMinutes(minutes))
-
+TimePicker(
     div(
       cls := "time-picker-simple",
       wheel($signal = timeVar.signal.map(_.hours12),
@@ -77,7 +94,9 @@ object TimePicker {
         incrementRep,
         decrementRep)
         .amend(cls("amOrPm")),
-    )
+    ),
+  timeVar.signal.map(_.toDumbAmericanString)
+)
   }
 }
 
