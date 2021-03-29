@@ -5,3 +5,6 @@ addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.2")
 addSbtPlugin("au.com.onegeek" %% "sbt-dotenv" % "2.1.146")
 addSbtPlugin("com.codecommit" % "sbt-github-packages" % "0.5.0")
 //
+
+addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.9.7")
+addSbtPlugin("com.jsuereth" % "sbt-pgp" % "2.0.1")

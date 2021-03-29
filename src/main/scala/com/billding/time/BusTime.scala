@@ -132,6 +132,10 @@ case class BusTime private (
 }
 
 object BusTime {
+//  import scalajs.dom.experimental.intl.Intl
+//
+//  def apply(): BusTime =
+//    Intl.DateTimeFormat()
 
   def apply(
     raw: String,

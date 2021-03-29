@@ -43,12 +43,6 @@ object TimeShit {
 
   import com.raquo.laminar.api.L._
 
-  def basicUpArrow() =
-    div("+")
-
-  def basicDownArrow() =
-    div("-")
-
   def basicIncVerbiage() =
     span("Inc")
 
@@ -67,12 +61,9 @@ object TimeShit {
       src := "/src/main/resources/icons/glyphicons-basic-221-chevron-down.svg",
     )
 
-  def activeUpArrow() =
-    basicUpArrow()
-
   val body: Div =
     div(
-      TimePicker("08:03", basicUpArrow(), basicDownArrow()) match {
+      TimePicker("08:03") match {
         case TimePicker(component, time) =>
           div(
             child.text <-- time.map("Exposed time: " + _ ) ,
@@ -80,8 +71,8 @@ object TimeShit {
           )
       },
       TimePicker("14:00",
-        fancyUpArrowThatShouldBeProvidedByEndUser,
-        fancyDownArrowThatShouldBeProvidedByEndUser).component,
+        fancyUpArrowThatShouldBeProvidedByEndUser(),
+        fancyDownArrowThatShouldBeProvidedByEndUser()).component,
       TimePicker("21:45",
         basicIncVerbiage(),
         basicDownVerbiage()).component
