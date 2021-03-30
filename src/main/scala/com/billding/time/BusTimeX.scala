@@ -63,8 +63,8 @@ object TimeShit {
 
   val body: Div =
     div(
-      TimePicker("08:03") match {
-        case TimePicker(component, time) =>
+      TimePicker.basicWithTypedTime("08:03") match {
+        case TimePickerTyped(component, time) =>
           div(
             child.text <-- time.map("Exposed time: " + _ ) ,
             component
