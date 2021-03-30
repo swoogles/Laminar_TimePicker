@@ -55,8 +55,8 @@ object MinuteDuration {
     def minutes: MinuteDuration = MinuteDuration.ofMinutes(int)
   }
 
-  implicit def toBusDuration(
+  implicit def toMinuteDuration(
     int: Int,
-  ) =
+  ): DurationFriendlyInt =
     new DurationFriendlyInt(int)
 }

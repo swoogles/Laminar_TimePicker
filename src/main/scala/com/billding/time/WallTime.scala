@@ -81,9 +81,9 @@ case class WallTime private(
     WallTime(ModMinutes.safe(Minutes(localTime.m.value + minutes)))
 
   def plus(
-            busDuration: MinuteDuration,
+            duration: MinuteDuration,
   ) =
-    plusMinutes(busDuration.minutes.value)
+    plusMinutes(duration.minutes.value)
 
   val paddedMinutes: String =
     if (minutes < 10)
