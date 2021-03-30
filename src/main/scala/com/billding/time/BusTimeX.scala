@@ -44,10 +44,10 @@ object TimeShit {
   import com.raquo.laminar.api.L._
 
   def basicIncVerbiage() =
-    span("Inc")
+    span("Inc", styleAttr("font-size: 3vmin"))
 
   def basicDownVerbiage() =
-    span("Dec")
+    span("Dec", styleAttr("font-size: 3vmin"))
 
   def fancyUpArrowThatShouldBeProvidedByEndUser() =
     img(

@@ -20,12 +20,11 @@ object TimePicker {
 """
 <style>
 .time-picker {
-    font-size: 3.5rem;
+    font-size: 10vmin;
 
     /*background-color: lightblue;*/
     width: 100%;
     min-width: 150px;
-    max-width: 450px;
     display: grid;
     grid-template-columns: minmax(2.5rem, 30%) minmax(2.5rem, 30%) minmax(2.5rem, 30%);
     grid-template-rows: auto 1fr ;
@@ -54,20 +53,27 @@ object TimePicker {
 
 .tp-inc {
    grid-area: tp-inc;
+   width:15vmin;
+   height:15vmin;
 }
 .tp-display { grid-area: tp-display; }
-.tp-dec { grid-area: tp-dec; }
+.tp-dec {
+  grid-area: tp-dec;
+  width:15vmin;
+  height:15vmin;
+}
 
 
 .plus {
   position: relative;
-  width:3.5em;
-  height:3.5em;
+  width:100%;
+  height:100%;
 }
 
 .plus:before,
 .plus:after {
   content: "";
+  width: 100%;
   position:absolute;
   background:#000;
 }
@@ -77,23 +83,25 @@ object TimePicker {
   left:50%;
   top:4px; /* this defines how much black "border" there should be */
   bottom:4px;
-  width:.4em;
+  width:  20%;
+  min-width: .4rem;
   transform:translateX(-50%);
 }
 
 /* the horizontal line */
 .plus:after {
   top:50%;
-  left:4px;
-  right:4px;
-  height:.4em;
+  left:1%;
+  right:9%;
+  height:  20%;
+  min-height: .4rem;
   transform:translateY(-50%);
 }
 
 .minus {
   position: relative;
-  width:3.5em;
-  height:3.5em;
+  width:100%;
+  height:100%;
 }
 
 .minus:before,
@@ -108,7 +116,7 @@ object TimePicker {
   top:50%;
   left:4px;
   right:4px;
-  height:.4em;
+  height:  20%;
   transform:translateY(-50%);
 }
 </style>
@@ -117,7 +125,7 @@ object TimePicker {
 
   dom.document.querySelector("head").innerHTML += style
 
-  def wheel(
+  private def wheel(
              $signal: Signal[Any],
              updater: Int => Unit,
              delta: Int,
@@ -157,8 +165,8 @@ object TimePicker {
 
   def apply(
              initialTime: String,
-             incrementRep: => HtmlElement = basicUpArrow(),
-             decrementRep: => HtmlElement = basicDownArrow(),
+             incrementRep: => HtmlElement,
+             decrementRep: => HtmlElement,
            ): TimePicker =
     basicWithTypedTime(initialTime, incrementRep, decrementRep) match {
       case TimePickerTyped(component, time) => TimePicker(component,time.map(_.toDumbAmericanString))
