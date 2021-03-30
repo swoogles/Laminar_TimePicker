@@ -70,10 +70,10 @@ object TimeShit {
             component
           )
       },
-      TimePicker("14:00",
+      TimePicker.from24hourString("14:00",
         fancyUpArrowThatShouldBeProvidedByEndUser(),
         fancyDownArrowThatShouldBeProvidedByEndUser()).component,
-      TimePicker("21:45",
+      TimePicker.from24hourString("21:45",
         basicIncVerbiage(),
         basicDownVerbiage()).component
     )

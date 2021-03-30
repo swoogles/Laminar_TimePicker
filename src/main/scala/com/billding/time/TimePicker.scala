@@ -16,7 +16,7 @@ case class TimePickerTyped(
 
 object TimePicker {
 
-  val style =
+  private val style =
 """
 <style>
 .time-picker {
@@ -158,24 +158,25 @@ object TimePicker {
   private def basicDownArrow() =
     div(cls("minus"))
 
-  def withPlusMinusButtons(
-           initialTime: String,
-           ) =
-    apply(initialTime, basicUpArrow(), basicDownArrow())
-
-  def apply(
+  def from24hourString(
              initialTime: String,
              incrementRep: => HtmlElement,
              decrementRep: => HtmlElement,
            ): TimePicker =
-    basicWithTypedTime(initialTime, incrementRep, decrementRep) match {
+    withTypedTime(initialTime, incrementRep, decrementRep) match {
       case TimePickerTyped(component, time) => TimePicker(component,time.map(_.toDumbAmericanString))
     }
 
   def basicWithTypedTime(
+                          initialTime: String,
+                        ): TimePickerTyped = {
+    withTypedTime(initialTime, basicUpArrow(), basicDownArrow())
+  }
+
+  def withTypedTime(
              initialTime: String,
-             incrementRep: => HtmlElement = basicUpArrow(),
-             decrementRep: => HtmlElement = basicDownArrow(),
+             incrementRep: => HtmlElement,
+             decrementRep: => HtmlElement,
            ): TimePickerTyped = {
     val timeVar: Var[BusTime] = Var(BusTime(initialTime))
     val updater =
