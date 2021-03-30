@@ -11,7 +11,7 @@ case class TimePicker(
 
 case class TimePickerTyped(
                        component: Div,
-                       $time: Signal[BusTime]
+                       $time: Signal[WallTime]
                      )
 
 object TimePicker {
@@ -178,7 +178,7 @@ object TimePicker {
              incrementRep: => HtmlElement,
              decrementRep: => HtmlElement,
            ): TimePickerTyped = {
-    val timeVar: Var[BusTime] = Var(BusTime(initialTime))
+    val timeVar: Var[WallTime] = Var(WallTime(initialTime))
     val updater =
       (minutes: Int) => timeVar.update(_.plusMinutes(minutes))
     TimePickerTyped(

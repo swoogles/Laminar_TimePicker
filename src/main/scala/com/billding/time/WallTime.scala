@@ -27,7 +27,7 @@ object ModMinutes {
     ModMinutes(Minutes(minutes.value % (24 * 60)))
 }
 
-case class BusTime private (
+case class WallTime private(
   localTime: ModMinutes /*numMinutes*/) {
   val hours24: Int = localTime / 60
 
@@ -45,43 +45,43 @@ case class BusTime private (
       DayTime.AM.toString
 
   def isBefore(
-    busTime: BusTime,
+                wallTime: WallTime,
   ) =
-    localTime.isBefore(busTime.localTime)
+    localTime.isBefore(wallTime.localTime)
 
   def isAfter(
-    busTime: BusTime,
+               wallTime: WallTime,
   ) =
-    localTime.isAfter(busTime.localTime)
+    localTime.isAfter(wallTime.localTime)
 
   def isBeforeOrEqualTo(
-    busTime: BusTime,
+                         wallTime: WallTime,
   ) =
-    localTime.isBefore(busTime.localTime) ||
-    localTime.equals(busTime.localTime)
+    localTime.isBefore(wallTime.localTime) ||
+    localTime.equals(wallTime.localTime)
 
   def isAfterOrEqualTo(
-    busTime: BusTime,
+                        wallTime: WallTime,
   ) =
-    localTime.isAfter(busTime.localTime) ||
-    localTime.equals(busTime.localTime)
+    localTime.isAfter(wallTime.localTime) ||
+    localTime.equals(wallTime.localTime)
 
   def between(
-    busTime: BusTime,
-  ): BusDuration =
-    BusDuration
+               wallTime: WallTime,
+  ): MinuteDuration =
+    MinuteDuration
       .between(
-        busTime,
+        wallTime,
         this,
       )
 
   def plusMinutes(
     minutes: Int,
   ) =
-    BusTime(ModMinutes.safe(Minutes(localTime.m.value + minutes)))
+    WallTime(ModMinutes.safe(Minutes(localTime.m.value + minutes)))
 
   def plus(
-    busDuration: BusDuration,
+            busDuration: MinuteDuration,
   ) =
     plusMinutes(busDuration.minutes.value)
 
@@ -107,19 +107,19 @@ case class BusTime private (
 
   def isLikelyEarlyMorningRatherThanLateNight: Boolean =
     this.isAfter(
-      BusTime(
+      WallTime(
         ModMinutes.safe(Minutes(beginningOfMorningRoutesInHours)),
       ),
     )
 
   def canEqual(
     other: Any,
-  ): Boolean = other.isInstanceOf[BusTime]
+  ): Boolean = other.isInstanceOf[WallTime]
 
   override def equals(
     other: Any,
   ): Boolean = other match {
-    case that: BusTime =>
+    case that: WallTime =>
       (that.canEqual(this)) &&
       localTime == that.localTime
     case _ => false
@@ -131,7 +131,7 @@ case class BusTime private (
   }
 }
 
-object BusTime {
+object WallTime {
 //  import scalajs.dom.experimental.intl.Intl
 //
 //  def apply(): BusTime =
@@ -139,8 +139,8 @@ object BusTime {
 
   def apply(
     raw: String,
-  ): BusTime =
-    BusTime(ModMinutes.safe(Minutes(parseMinutes(raw))))
+  ): WallTime =
+    WallTime(ModMinutes.safe(Minutes(parseMinutes(raw))))
 
   def parseMinutes(
     raw: String,
@@ -149,18 +149,8 @@ object BusTime {
     hours.toInt * 60 + minutes.toInt
   }
 
-  // TODO Shouldn't be part of this class
-  def catchableBus(
-    now: BusTime,
-    goal: BusTime,
-  ) =
-    goal.localTime
-      .isAfter(now.localTime) ||
-    goal.localTime
-      .equals(now.localTime)
-
-  implicit val busTimeOrdering: Ordering[BusTime] =
-    (x: BusTime, y: BusTime) =>
+  implicit val ordering: Ordering[WallTime] =
+    (x: WallTime, y: WallTime) =>
       if ((x.isLikelyEarlyMorningRatherThanLateNight
           && y.isLikelyEarlyMorningRatherThanLateNight)
           || (

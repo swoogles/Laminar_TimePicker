@@ -12,11 +12,11 @@ object BusTimeTest extends munit.FunSuite {
 
  */
 
-object BusTimeTest extends TestSuite {
+object WallTimeTest extends TestSuite {
   val tests = Tests {
     test("basic") {
-      println(BusTime("08:30").minutes)
-      assert(BusTime("08:30").minutes == 30)
+      println(WallTime("08:30").minutes)
+      assert(WallTime("08:30").minutes == 30)
     }
   }
 }

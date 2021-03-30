@@ -1,27 +1,27 @@
 package com.billding.time
 
-case class BusDuration(
+case class MinuteDuration(
   minutes: Minutes) {
   val toMinutes: Long = minutes.value
 
   def times(
     int: Int,
   ) =
-    BusDuration.ofMinutes(toMinutes.toInt * int)
+    MinuteDuration.ofMinutes(toMinutes.toInt * int)
 
   def dividedBy(
-    duration: BusDuration,
+                 duration: MinuteDuration,
   ) =
     toMinutes / duration.toMinutes
 
   def canEqual(
     other: Any,
-  ): Boolean = other.isInstanceOf[BusDuration]
+  ): Boolean = other.isInstanceOf[MinuteDuration]
 
   override def equals(
     other: Any,
   ): Boolean = other match {
-    case that: BusDuration =>
+    case that: MinuteDuration =>
       (that.canEqual(this)) &&
       toMinutes == that.toMinutes
     case _ => false
@@ -33,13 +33,13 @@ case class BusDuration(
   }
 }
 
-object BusDuration {
+object MinuteDuration {
 
   def between(
-    a: BusTime,
-    b: BusTime,
+               a: WallTime,
+               b: WallTime,
   ) =
-    BusDuration(
+    MinuteDuration(
       Minutes(
         math.abs(a.localTime.m.value - b.localTime.m.value).toInt,
       ),
@@ -48,11 +48,11 @@ object BusDuration {
   def ofMinutes(
     minutes: Int,
   ) =
-    new BusDuration(Minutes(minutes))
+    new MinuteDuration(Minutes(minutes))
 
   class DurationFriendlyInt(
     int: Int) {
-    def minutes: BusDuration = BusDuration.ofMinutes(int)
+    def minutes: MinuteDuration = MinuteDuration.ofMinutes(int)
   }
 
   implicit def toBusDuration(

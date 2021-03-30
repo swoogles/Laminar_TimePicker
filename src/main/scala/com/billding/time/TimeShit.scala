@@ -1,5 +1,6 @@
 package com.billding.time
 
+import com.raquo.laminar.api.L
 import org.scalajs.dom
 
 /*
@@ -64,7 +65,7 @@ object TimeShit {
   val body: Div =
     div(
       TimePicker.basicWithTypedTime("08:03") match {
-        case TimePickerTyped(component, time) =>
+        case TimePickerTyped(component: Div, time: L.Signal[WallTime]) =>
           div(
             child.text <-- time.map("Exposed time: " + _ ) ,
             component
