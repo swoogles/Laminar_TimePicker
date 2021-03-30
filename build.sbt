@@ -5,7 +5,7 @@ enablePlugins(ScalaJSPlugin)
 
 scalaJSUseMainModuleInitializer := true
 
-version := "0.1.6-SNAPSHOT"
+version := "0.1.6"
 
 scalaVersion := "2.13.5"
 
