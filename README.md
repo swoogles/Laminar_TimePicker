@@ -12,16 +12,19 @@ libraryDependencies += "com.billdingsoftware" %%% "timepicker" % "0.1.6"
 The simplest use-case is:
 ```scala
 TimePicker.basicWithTypedTime("08:03") match {
-  case TimePickerTyped(component: Div, time: L.Signal[BusTime]) =>
+  case TimePickerTyped(
+    component: Div, 
+    $time: L.Signal[BusTime]
+  ) =>
     div(
-      child.text <-- time.map("Exposed time: " + _ ) ,
+      child.text <-- $time.map("time: " + _),
       component
     )
 }
 ```
 
 You can also drop in custom up/down button elements via:
-```
+```scala
   TimePicker.from24hourString(
     initialTime = "09:30",
     incrementRep = span("Inc"),
@@ -31,5 +34,6 @@ You can also drop in custom up/down button elements via:
 
 TODOs:
 - 24 hour display mode
+- Adjustable increments. Hardcoded to 5 minutes currently.
 - Constructor that accepts a `String=>UserDefinedTimeType` and returns a `Signal[UserDefinedTimeType]`
 - A hundred other things
