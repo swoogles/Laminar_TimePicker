@@ -2,7 +2,7 @@ This is just one small contribution to the Laminar ecosystem.
 It is my first UI component, and it's very narrowly useful at the moment.
 I just love Laminar and want to make it easier for people to experiment with it!
 
-[Example](docs/LaminarTimePicker.gif)
+![](docs/LaminarTimePicker.gif)
 
 To use:
 ```scala
