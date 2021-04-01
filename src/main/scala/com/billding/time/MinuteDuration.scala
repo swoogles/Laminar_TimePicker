@@ -41,7 +41,7 @@ object MinuteDuration {
   ) =
     MinuteDuration(
       Minutes(
-        math.abs(a.localTime.m.value - b.localTime.m.value).toInt,
+        math.abs(a.localTime.value - b.localTime.value).toInt,
       ),
     )
 

@@ -44,12 +44,6 @@ object TimeShit {
 
   import com.raquo.laminar.api.L._
 
-  def basicIncVerbiage() =
-    span("Inc", styleAttr("font-size: 3vmin"))
-
-  def basicDownVerbiage() =
-    span("Dec", styleAttr("font-size: 3vmin"))
-
   def fancyUpArrowThatShouldBeProvidedByEndUser() =
     img(
       cls := "glyphicon",
@@ -61,6 +55,18 @@ object TimeShit {
       cls := "glyphicon",
       src := "/src/main/resources/icons/glyphicons-basic-221-chevron-down.svg",
     )
+
+  def basicIncVerbiage() =
+    span("Inc", styleAttr("font-size: 3vmin"))
+
+  def basicDownVerbiage() =
+    span("Dec", styleAttr("font-size: 3vmin"))
+
+  TimePicker.from24hourString(
+    initialTime = "09:30",
+    incrementRep = span("Inc"),
+    decrementRep = span("Dec")
+  )
 
   val body: Div =
     div(

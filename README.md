@@ -2,9 +2,11 @@ This is just one small contribution to the Laminar ecosystem.
 It is my first UI component, and it's very narrowly useful at the moment.
 I just love Laminar and want to make it easier for people to experiment with it!
 
+[Example](docs/LaminarTimePicker.gif)
+
 To use:
 ```scala
-libraryDependencies += "com.billdingsoftware" %%% "timepicker" % "0.1.5"
+libraryDependencies += "com.billdingsoftware" %%% "timepicker" % "0.1.6"
 ```
 
 The simplest use-case is:
@@ -18,11 +20,16 @@ TimePicker.basicWithTypedTime("08:03") match {
 }
 ```
 
+You can also drop in custom up/down button elements via:
+```
+  TimePicker.from24hourString(
+    initialTime = "09:30",
+    incrementRep = span("Inc"),
+    decrementRep = span("Dec")
+  )
+```
+
 TODOs:
-- Rename BusTime to something more general, eg:
-    - WallTime
-    - LocalTime
-    - Time
-    - TimeOfDay
 - 24 hour display mode
 - Constructor that accepts a `String=>UserDefinedTimeType` and returns a `Signal[UserDefinedTimeType]`
+- A hundred other things

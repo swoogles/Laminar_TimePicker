@@ -1,34 +1,36 @@
 package com.billding.time
 
-case class Minutes(
-  value: Int)
-
-case class ModMinutes private (
-  m: Minutes) {
+case class Minutes private(
+  value: Int) {
 
   def /(
-    other: Int,
-  ) = m.value / other
+         other: Int,
+       ) = value / other
 
   def isBefore(
-    other: ModMinutes,
-  ): Boolean = m.value < other.m.value
+                m: Minutes,
+              ): Boolean = value < m.value
 
   def isAfter(
-    other: ModMinutes,
-  ): Boolean = m.value > other.m.value
+               m: Minutes,
+             ): Boolean = value > m.value
 }
 
-object ModMinutes {
+object Minutes {
+  private val  max = 24 * 60
 
   def safe(
-    minutes: Minutes,
-  ): ModMinutes =
-    ModMinutes(Minutes(minutes.value % (24 * 60)))
+            value: Int,
+          ): Minutes =
+    Minutes(mod(value, max))
+
+  private def mod(dividend: Int, divisor: Int): Int =
+    ((dividend % divisor) + divisor) % divisor
+
 }
 
 case class WallTime private(
-  localTime: ModMinutes /*numMinutes*/) {
+  localTime: Minutes /*numMinutes*/) {
   val hours24: Int = localTime / 60
 
   val hours12: Int =
@@ -36,7 +38,7 @@ case class WallTime private(
       12
     else hours24 % 12
 
-  val minutes = localTime.m.value % 60
+  val minutes = localTime.value % 60
 
   val dayTime: String =
     if (hours24 > 11)
@@ -78,7 +80,7 @@ case class WallTime private(
   def plusMinutes(
     minutes: Int,
   ) =
-    WallTime(ModMinutes.safe(Minutes(localTime.m.value + minutes)))
+    WallTime(Minutes.safe(localTime.value + minutes))
 
   def plus(
             duration: MinuteDuration,
@@ -108,7 +110,7 @@ case class WallTime private(
   def isLikelyEarlyMorningRatherThanLateNight: Boolean =
     this.isAfter(
       WallTime(
-        ModMinutes.safe(Minutes(beginningOfMorningRoutesInHours)),
+        Minutes.safe(beginningOfMorningRoutesInHours),
       ),
     )
 
@@ -140,7 +142,7 @@ object WallTime {
   def apply(
     raw: String,
   ): WallTime =
-    WallTime(ModMinutes.safe(Minutes(parseMinutes(raw))))
+    WallTime(Minutes.safe(parseMinutes(raw)))
 
   def parseMinutes(
     raw: String,
@@ -157,7 +159,7 @@ object WallTime {
             !x.isLikelyEarlyMorningRatherThanLateNight
             && !y.isLikelyEarlyMorningRatherThanLateNight
           ))
-        x.localTime.m.value.compareTo(y.localTime.m.value)
+        x.localTime.value.compareTo(y.localTime.value)
       else if (x.isLikelyEarlyMorningRatherThanLateNight)
         -1
       else
