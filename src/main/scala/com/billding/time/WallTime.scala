@@ -102,6 +102,15 @@ case class WallTime private(
     s"$paddedHours:$paddedMinutes $dayTime"
   }
 
+  val toEUString: String = {
+    val paddedHours =
+      if (hours24 < 10)
+        s"0$hours24"
+      else
+        hours24
+    s"$paddedHours:$paddedMinutes"
+  }
+
   val toDumbAmericanString: String =
     toString
 

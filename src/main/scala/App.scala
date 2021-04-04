@@ -14,7 +14,7 @@ object App {
       _ =>
         val appElement =
           div(
-            h1("Hello TimePicker!"),
+            h1("Hello TimePicker!!"),
             TimeShit.body,
           )
         render(dom.document.querySelector("#laminarApp"), appElement)

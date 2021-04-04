@@ -11,8 +11,8 @@ libraryDependencies += "com.billdingsoftware" %%% "timepicker" % "0.1.6"
 
 The simplest use-case is:
 ```scala
-TimePicker.basicWithTypedTime("08:03") match {
-  case TimePickerTyped(
+TimePicker.basic("08:03") match {
+  case TimePicker(
     component: Div, 
     $time: L.Signal[BusTime]
   ) =>

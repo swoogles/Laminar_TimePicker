@@ -1,17 +1,10 @@
 package com.billding.time
 
-import org.scalajs.dom
-
 import com.raquo.laminar.api.L._
 
-case class TimePicker(
+case class TimePicker[T](
                      component: Div,
-                     $time: Signal[String]
-                     )
-
-case class TimePickerTyped(
-                       component: Div,
-                       $time: Signal[WallTime]
+                     $time: Signal[T]
                      )
 
 object TimePicker {
@@ -123,7 +116,7 @@ object TimePicker {
 
 """
 
-  dom.document.querySelector("head").innerHTML += style
+  org.scalajs.dom.document.querySelector("head").innerHTML += style
 
   private def wheel(
              $signal: Signal[Any],
@@ -162,26 +155,27 @@ object TimePicker {
              initialTime: String,
              incrementRep: => HtmlElement,
              decrementRep: => HtmlElement,
-           ): TimePicker =
-    withTypedTime(initialTime, incrementRep, decrementRep) match {
-      case TimePickerTyped(component, time) => TimePicker(component,time.map(_.toDumbAmericanString))
+           ): TimePicker[String] =
+    withTypedTimeF(initialTime, incrementRep, decrementRep, WallTime(_)) match {
+      case TimePicker(component, time) => TimePicker(component,time.map(_.toDumbAmericanString))
     }
 
-  def basicWithTypedTime(
+  def apply(
                           initialTime: String,
-                        ): TimePickerTyped = {
-    withTypedTime(initialTime, basicUpArrow(), basicDownArrow())
+                        ): TimePicker[WallTime] = {
+    withTypedTimeF(initialTime, basicUpArrow(), basicDownArrow(), WallTime(_))
   }
 
-  def withTypedTime(
-             initialTime: String,
-             incrementRep: => HtmlElement,
-             decrementRep: => HtmlElement,
-           ): TimePickerTyped = {
+  def withTypedTimeF[T](
+                     initialTime: String,
+                     incrementRep: => HtmlElement,
+                     decrementRep: => HtmlElement,
+                     typer: String => T
+                   ): TimePicker[T] = {
     val timeVar: Var[WallTime] = Var(WallTime(initialTime))
     val updater =
       (minutes: Int) => timeVar.update(_.plusMinutes(minutes))
-    TimePickerTyped(
+    TimePicker(
       div(
         cls := "time-picker",
         wheel($signal = timeVar.signal.map(_.hours12),
@@ -203,7 +197,7 @@ object TimePicker {
           decrementRep)
           .amend(cls("amOrPm")),
       ),
-      timeVar.signal
+      timeVar.signal.map(time=>typer(time.toEUString))
     )
   }
 }
