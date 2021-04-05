@@ -156,17 +156,17 @@ object TimePicker {
              incrementRep: => HtmlElement,
              decrementRep: => HtmlElement,
            ): TimePicker[String] =
-    withTypedTimeF(initialTime, incrementRep, decrementRep, WallTime(_)) match {
+    apply(initialTime, incrementRep, decrementRep, WallTime(_)) match {
       case TimePicker(component, time) => TimePicker(component,time.map(_.toDumbAmericanString))
     }
 
   def apply(
                           initialTime: String,
                         ): TimePicker[WallTime] = {
-    withTypedTimeF(initialTime, basicUpArrow(), basicDownArrow(), WallTime(_))
+    apply(initialTime, basicUpArrow(), basicDownArrow(), WallTime(_))
   }
 
-  def withTypedTimeF[T](
+  def apply[T](
                      initialTime: String,
                      incrementRep: => HtmlElement,
                      decrementRep: => HtmlElement,
