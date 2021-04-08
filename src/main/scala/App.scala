@@ -1,4 +1,4 @@
-import com.billding.time.{WallTime, TimeShit}
+import com.billding.time.{TimeShit, WallTime}
 import com.raquo.laminar.api.L
 import com.raquo.laminar.nodes.ReactiveHtmlElement
 import org.scalajs.dom

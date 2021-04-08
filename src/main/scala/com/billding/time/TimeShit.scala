@@ -27,15 +27,21 @@ object TimeShit {
       TimePicker("08:03") match {
         case TimePicker(component: Div, time: Signal[WallTime]) =>
           div(
-            child.text <-- time.map("Exposed time: " + _ ) ,
-            component
+            child.text <-- time.map("Exposed time: " + _),
+            component,
           )
       },
-      TimePicker.from24hourString("14:00",
-        fancyUpArrowThatShouldBeProvidedByEndUser(),
-        fancyDownArrowThatShouldBeProvidedByEndUser()).component,
-      TimePicker.from24hourString("21:45",
-        basicIncVerbiage(),
-        basicDownVerbiage()).component
+      TimePicker
+        (
+          "14:00",
+          fancyUpArrowThatShouldBeProvidedByEndUser(),
+          fancyDownArrowThatShouldBeProvidedByEndUser(),
+        )
+        .component,
+      TimePicker
+        ("21:45",
+                          basicIncVerbiage(),
+                          basicDownVerbiage())
+        .component,
     )
 }

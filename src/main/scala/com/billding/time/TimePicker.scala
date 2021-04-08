@@ -3,14 +3,59 @@ package com.billding.time
 import com.raquo.laminar.api.L._
 
 case class TimePicker[T](
-                     component: Div,
-                     $time: Signal[T]
-                     )
+  component: Div,
+  $time: Signal[T])
 
 object TimePicker {
+  def apply(
+             initialTime: String,
+             incrementRep: => HtmlElement,
+             decrementRep: => HtmlElement,
+           ): TimePicker[String] =
+    apply(initialTime, incrementRep, decrementRep, x=>x)
+
+  def apply(
+             initialTime: String,
+           ): TimePicker[WallTime] =
+    apply(initialTime, basicUpArrow(), basicDownArrow(), WallTime(_))
+
+  def apply[T](
+                initialTime: String,
+                incrementRep: => HtmlElement,
+                decrementRep: => HtmlElement,
+                typer: String => T,
+              ): TimePicker[T] = {
+    val timeVar: Var[WallTime] = Var(WallTime(initialTime))
+    val updater =
+      (minutes: Int) => timeVar.update(_.plusMinutes(minutes))
+    TimePicker(
+      div(
+        cls := "time-picker",
+        wheel($signal = timeVar.signal.map(_.hours12),
+          updater = updater,
+          delta = 60,
+          incrementRep,
+          decrementRep)
+          .amend(cls("hour")),
+        wheel($signal = timeVar.signal.map(_.paddedMinutes),
+          updater = updater,
+          delta = 5,
+          incrementRep,
+          decrementRep)
+          .amend(cls("minute")),
+        wheel($signal = timeVar.signal.map(_.dayTime),
+          updater = updater,
+          delta = 60 * 12,
+          incrementRep,
+          decrementRep)
+          .amend(cls("amOrPm")),
+      ),
+      timeVar.signal.map(time => typer(time.toEUString)),
+    )
+  }
 
   private val style =
-"""
+    """
 <style>
 .time-picker {
     font-size: 10vmin;
@@ -119,12 +164,12 @@ object TimePicker {
   org.scalajs.dom.document.querySelector("head").innerHTML += style
 
   private def wheel(
-             $signal: Signal[Any],
-             updater: Int => Unit,
-             delta: Int,
-             upButtonRep: HtmlElement,
-             downButtonRep: HtmlElement,
-           ): Div =
+    $signal: Signal[Any],
+    updater: Int => Unit,
+    delta: Int,
+    upButtonRep: HtmlElement,
+    downButtonRep: HtmlElement,
+  ): Div =
     div(
       cls("wheel"),
       button(
@@ -151,54 +196,4 @@ object TimePicker {
   private def basicDownArrow() =
     div(cls("minus"))
 
-  def from24hourString(
-             initialTime: String,
-             incrementRep: => HtmlElement,
-             decrementRep: => HtmlElement,
-           ): TimePicker[String] =
-    apply(initialTime, incrementRep, decrementRep, WallTime(_)) match {
-      case TimePicker(component, time) => TimePicker(component,time.map(_.toDumbAmericanString))
-    }
-
-  def apply(
-                          initialTime: String,
-                        ): TimePicker[WallTime] = {
-    apply(initialTime, basicUpArrow(), basicDownArrow(), WallTime(_))
-  }
-
-  def apply[T](
-                     initialTime: String,
-                     incrementRep: => HtmlElement,
-                     decrementRep: => HtmlElement,
-                     typer: String => T
-                   ): TimePicker[T] = {
-    val timeVar: Var[WallTime] = Var(WallTime(initialTime))
-    val updater =
-      (minutes: Int) => timeVar.update(_.plusMinutes(minutes))
-    TimePicker(
-      div(
-        cls := "time-picker",
-        wheel($signal = timeVar.signal.map(_.hours12),
-          updater = updater,
-          delta = 60,
-          incrementRep,
-          decrementRep)
-          .amend(cls("hour")),
-        wheel($signal = timeVar.signal.map(_.paddedMinutes),
-          updater = updater,
-          delta = 5,
-          incrementRep,
-          decrementRep)
-          .amend(cls("minute")),
-        wheel($signal = timeVar.signal.map(_.dayTime),
-          updater = updater,
-          delta = 60 * 12,
-          incrementRep,
-          decrementRep)
-          .amend(cls("amOrPm")),
-      ),
-      timeVar.signal.map(time=>typer(time.toEUString))
-    )
-  }
 }
-

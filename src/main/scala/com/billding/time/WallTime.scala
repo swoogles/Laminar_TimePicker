@@ -1,35 +1,38 @@
 package com.billding.time
 
-case class Minutes private(
+case class Minutes private (
   value: Int) {
 
   def /(
-         other: Int,
-       ) = value / other
+    other: Int,
+  ) = value / other
 
   def isBefore(
-                m: Minutes,
-              ): Boolean = value < m.value
+    m: Minutes,
+  ): Boolean = value < m.value
 
   def isAfter(
-               m: Minutes,
-             ): Boolean = value > m.value
+    m: Minutes,
+  ): Boolean = value > m.value
 }
 
 object Minutes {
-  private val  max = 24 * 60
+  private val max = 24 * 60
 
   def safe(
-            value: Int,
-          ): Minutes =
+    value: Int,
+  ): Minutes =
     Minutes(mod(value, max))
 
-  private def mod(dividend: Int, divisor: Int): Int =
+  private def mod(
+    dividend: Int,
+    divisor: Int,
+  ): Int =
     ((dividend % divisor) + divisor) % divisor
 
 }
 
-case class WallTime private(
+case class WallTime private (
   localTime: Minutes /*numMinutes*/) {
   val hours24: Int = localTime / 60
 
@@ -47,29 +50,29 @@ case class WallTime private(
       DayTime.AM.toString
 
   def isBefore(
-                wallTime: WallTime,
+    wallTime: WallTime,
   ) =
     localTime.isBefore(wallTime.localTime)
 
   def isAfter(
-               wallTime: WallTime,
+    wallTime: WallTime,
   ) =
     localTime.isAfter(wallTime.localTime)
 
   def isBeforeOrEqualTo(
-                         wallTime: WallTime,
+    wallTime: WallTime,
   ) =
     localTime.isBefore(wallTime.localTime) ||
     localTime.equals(wallTime.localTime)
 
   def isAfterOrEqualTo(
-                        wallTime: WallTime,
+    wallTime: WallTime,
   ) =
     localTime.isAfter(wallTime.localTime) ||
     localTime.equals(wallTime.localTime)
 
   def between(
-               wallTime: WallTime,
+    wallTime: WallTime,
   ): MinuteDuration =
     MinuteDuration
       .between(
@@ -83,7 +86,7 @@ case class WallTime private(
     WallTime(Minutes.safe(localTime.value + minutes))
 
   def plus(
-            duration: MinuteDuration,
+    duration: MinuteDuration,
   ) =
     plusMinutes(duration.minutes.value)
 
@@ -175,10 +178,9 @@ object WallTime {
         1
 
 }
-private sealed trait DayTime
+sealed private trait DayTime
 
 private object DayTime {
   case object AM extends DayTime
   case object PM extends DayTime
 }
-

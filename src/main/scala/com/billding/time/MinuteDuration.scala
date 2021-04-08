@@ -10,7 +10,7 @@ case class MinuteDuration(
     MinuteDuration.ofMinutes(toMinutes.toInt * int)
 
   def dividedBy(
-                 duration: MinuteDuration,
+    duration: MinuteDuration,
   ) =
     toMinutes / duration.toMinutes
 
@@ -36,8 +36,8 @@ case class MinuteDuration(
 object MinuteDuration {
 
   def between(
-               a: WallTime,
-               b: WallTime,
+    a: WallTime,
+    b: WallTime,
   ) =
     MinuteDuration(
       Minutes(

@@ -6,15 +6,15 @@ I just love Laminar and want to make it easier for people to experiment with it!
 
 To use:
 ```scala
-libraryDependencies += "com.billdingsoftware" %%% "timepicker" % "0.1.6"
+libraryDependencies += "com.billdingsoftware" %%% "timepicker" % "0.1.7"
 ```
 
 The simplest use-case is:
 ```scala
-TimePicker.basic("08:03") match {
+TimePicker("08:03") match {
   case TimePicker(
     component: Div, 
-    $time: L.Signal[BusTime]
+    $time: Signal[WallTime]
   ) =>
     div(
       child.text <-- $time.map("time: " + _),
@@ -25,7 +25,7 @@ TimePicker.basic("08:03") match {
 
 You can also drop in custom up/down button elements via:
 ```scala
-  TimePicker.from24hourString(
+  TimePicker(
     initialTime = "09:30",
     incrementRep = span("Inc"),
     decrementRep = span("Dec")
@@ -35,5 +35,4 @@ You can also drop in custom up/down button elements via:
 TODOs:
 - 24 hour display mode
 - Adjustable increments. Hardcoded to 5 minutes currently.
-- Constructor that accepts a `String=>UserDefinedTimeType` and returns a `Signal[UserDefinedTimeType]`
 - A hundred other things
