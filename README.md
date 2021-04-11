@@ -22,7 +22,8 @@ TimePicker("08:03 AM") match {
     )
 }
 ```
-This will use AM/PM, 12 hour notation. If you prefer 24 hour notation, omit the AM/PM.
+This will use AM/PM, 12 hour notation. If you prefer 24 hour notation, omit the AM/PM and that selector will not be 
+shown.
 
 ```scala
 TimePicker("15:00")

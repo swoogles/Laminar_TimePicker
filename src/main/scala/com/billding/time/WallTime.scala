@@ -186,10 +186,10 @@ object WallTime {
   def parseMinutes(
     raw: String,
   ) = {
-    if (raw.length == 5) {
+    if (raw.length == 4 || raw.length == 5) {
       val Array(hours, minutes) = raw.split(":")
       hours.toInt * 60 + minutes.toInt
-    } else if (raw.length == 8) {
+    } else if (raw.length == 7 || raw.length == 8) {
       val hourOffset =
         if(raw.endsWith("AM")) 0
         else if( raw.endsWith("PM")) 12
