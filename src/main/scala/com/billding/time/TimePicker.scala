@@ -19,6 +19,13 @@ object TimePicker {
            ): TimePicker[WallTime] =
     apply(initialTime, basicUpArrow(), basicDownArrow(), WallTime(_), 5)
 
+  def apply(
+             initialTime: String,
+             minuteDelta: Int
+           ): TimePicker[WallTime] =
+    apply(initialTime, basicUpArrow(), basicDownArrow(), WallTime(_), minuteDelta)
+
+
   def apply[T](
                 initialTime: String,
                 incrementRep: => HtmlElement,
@@ -26,7 +33,8 @@ object TimePicker {
                 typer: String => T,
                 minuteDelta: Int,
               ): TimePicker[T] = {
-    val timeVar: Var[WallTime] = Var(WallTime(initialTime))
+    val initialTimeTyped = WallTime(initialTime)
+    val timeVar: Var[WallTime] = Var(initialTimeTyped)
     val updater =
       (minutes: Int) => timeVar.update(_.plusMinutes(minutes))
     TimePicker(
@@ -44,12 +52,17 @@ object TimePicker {
           incrementRep,
           decrementRep)
           .amend(cls("minute")),
-        wheel($signal = timeVar.signal.map(_.dayTime),
-          updater = updater,
-          delta = 60 * 12,
-          incrementRep,
-          decrementRep)
-          .amend(cls("amOrPm")),
+
+        initialTimeTyped.hourNotation match {
+          case HourNotation.Twelve =>
+            wheel($signal = timeVar.signal.map(_.dayTime),
+              updater = updater,
+              delta = 60 * 12,
+              incrementRep,
+              decrementRep)
+              .amend(cls("amOrPm"))
+          case HourNotation.TwentyFour => div()
+        }
       ),
       timeVar.signal.map(time => typer(time.toEUString)),
     )
