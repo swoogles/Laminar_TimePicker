@@ -45,19 +45,19 @@ object HourNotation {
 case class WallTime private (
   localTime: Minutes /*numMinutes*/,
   hourNotation: HourNotation) {
-  val hours24: Int = localTime / 60
+  private val hours24: Int = localTime / 60
 
-  val hours12: Int =
+  private val hours12: Int =
     if (hours24 == 0 || hours24 == 12)
       12
     else hours24 % 12
 
-  val hours = hourNotation match {
+  val hours: Int = hourNotation match {
     case HourNotation.Twelve => hours12
     case HourNotation.TwentyFour => hours24
   }
 
-  val minutes = localTime.value % 60
+  val minutes: Int = localTime.value % 60
 
   val dayTime: String =
     if (hours24 > 11)
