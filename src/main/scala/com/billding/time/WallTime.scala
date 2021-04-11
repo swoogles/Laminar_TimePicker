@@ -1,5 +1,7 @@
 package com.billding.time
 
+import scala.util.matching.Regex
+
 case class Minutes private (
   value: Int) {
 
@@ -32,14 +34,28 @@ object Minutes {
 
 }
 
+sealed trait HourNotation
+
+object HourNotation {
+  case object Twelve extends HourNotation
+
+  case object TwentyFour extends HourNotation
+}
+
 case class WallTime private (
-  localTime: Minutes /*numMinutes*/) {
+  localTime: Minutes /*numMinutes*/,
+  hourNotation: HourNotation) {
   val hours24: Int = localTime / 60
 
   val hours12: Int =
     if (hours24 == 0 || hours24 == 12)
       12
     else hours24 % 12
+
+  val hours = hourNotation match {
+    case HourNotation.Twelve => hours12
+    case HourNotation.TwentyFour => hours24
+  }
 
   val minutes = localTime.value % 60
 
@@ -83,7 +99,7 @@ case class WallTime private (
   def plusMinutes(
     minutes: Int,
   ) =
-    WallTime(Minutes.safe(localTime.value + minutes))
+    WallTime(Minutes.safe(localTime.value + minutes), hourNotation)
 
   def plus(
     duration: MinuteDuration,
@@ -97,11 +113,16 @@ case class WallTime private (
       minutes.toString
 
   override val toString: String = {
+    val hoursVal =
+      hourNotation match {
+        case HourNotation.Twelve => hours12
+        case HourNotation.TwentyFour => hours24
+      }
     val paddedHours =
-      if (hours12 < 10)
-        s"0$hours12"
+      if (hoursVal < 10)
+        s"0$hoursVal"
       else
-        hours12
+        hoursVal
     s"$paddedHours:$paddedMinutes $dayTime"
   }
 
@@ -114,8 +135,14 @@ case class WallTime private (
     s"$paddedHours:$paddedMinutes"
   }
 
-  val toDumbAmericanString: String =
-    toString
+  val toDumbAmericanString: String = {
+    val paddedHours =
+      if (hours12 < 10)
+        s"0$hours12"
+      else
+        hours12
+    s"$paddedHours:$paddedMinutes $dayTime"
+  }
 
   val beginningOfMorningRoutesInHours = 60 * 4
 
@@ -123,6 +150,7 @@ case class WallTime private (
     this.isAfter(
       WallTime(
         Minutes.safe(beginningOfMorningRoutesInHours),
+        hourNotation
       ),
     )
 
@@ -146,23 +174,32 @@ case class WallTime private (
 }
 
 object WallTime {
-//  import scalajs.dom.experimental.intl.Intl
-//
-//  def apply(): BusTime =
-//    Intl.DateTimeFormat()
-
   def apply(
     raw: String,
   ): WallTime =
-    WallTime(Minutes.safe(parseMinutes(raw)))
+    WallTime(Minutes.safe(parseMinutes(raw)),
+      if(raw.contains("AM") || raw.contains("PM"))
+        HourNotation.Twelve else
+      HourNotation.TwentyFour
+    )
 
   def parseMinutes(
     raw: String,
   ) = {
-    val Array(hours, minutes) = raw.split(":")
-    hours.toInt * 60 + minutes.toInt
+    if (raw.length == 5) {
+      val Array(hours, minutes) = raw.split(":")
+      hours.toInt * 60 + minutes.toInt
+    } else if (raw.length == 8) {
+      val hourOffset =
+        if(raw.endsWith("AM")) 0
+        else if( raw.endsWith("PM")) 12
+        else throw new IllegalArgumentException(raw)
+      val Array(hours, minutes) = raw.dropRight(2).trim.split(":")
+      (hours.toInt + hourOffset) * 60 + minutes.toInt
+    } else throw new IllegalArgumentException(raw)
   }
 
+  // TODO Should I move this to the bus project?
   implicit val ordering: Ordering[WallTime] =
     (x: WallTime, y: WallTime) =>
       if ((x.isLikelyEarlyMorningRatherThanLateNight

@@ -36,10 +36,12 @@ object TimeShit {
           "14:00",
           fancyUpArrowThatShouldBeProvidedByEndUser(),
           fancyDownArrowThatShouldBeProvidedByEndUser(),
+          x => x,
+          10
         )
         .component,
       TimePicker
-        ("21:45",
+        ("08:45 AM",
                           basicIncVerbiage(),
                           basicDownVerbiage())
         .component,
