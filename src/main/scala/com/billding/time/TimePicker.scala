@@ -46,6 +46,7 @@ object TimePicker {
           incrementRep,
           decrementRep)
           .amend(cls("hour")),
+        phauxWheel(),
         wheel($signal = timeVar.signal.map(_.paddedMinutes),
           updater = updater,
           delta = minuteDelta,
@@ -78,24 +79,27 @@ object TimePicker {
     width: 100%;
     min-width: 150px;
     display: grid;
-    grid-template-columns: minmax(2.5rem, 30%) minmax(2.5rem, 30%) minmax(2.5rem, 30%);
+    grid-template-columns: minmax(2.5rem, 30%) minmax(1.0rem, 10%) minmax(2.5rem, 30%) minmax(2.5rem, 30%);
     grid-template-rows: auto 1fr ;
     grid-template-areas:
-            "hour       minute      amOrPm";
+            "hour  colon  minute  amOrPm";
     padding: 5px;
 }
 
 .hour { grid-area: hour; }
+.colon {
+   display: grid;
+   place-items: center;
+   grid-area: colon;
+}
 .minute { grid-area: minute; }
 .amOrPm { grid-area: amOrPm; }
 
 .wheel {
-    /*background-color: pink;*/
     display: grid;
     place-items: center;
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr ;
-    /*grid-template-columns: minmax(80px, 150px);*/
     grid-template-areas:
             "tp-inc"
             "tp-display"
@@ -202,6 +206,12 @@ object TimePicker {
         onClick.mapTo(-delta) --> updater,
         downButtonRep,
       ),
+    )
+
+  private def phauxWheel(): Div =
+    div(
+      cls("colon"),
+      ":"
     )
 
   private def basicUpArrow() =
