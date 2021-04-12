@@ -24,6 +24,13 @@ object TimeShit {
 
   val body: Div =
     div(
+      TimePicker("03:00 PM", minuteDelta = 5) match {
+        case TimePicker(component: Div, time: Signal[WallTime]) =>
+          div(
+            child.text <-- time.map("Exposed time: " + _),
+            component,
+          )
+      },
       TimePicker("15:00", minuteDelta = 15) match {
         case TimePicker(component: Div, time: Signal[WallTime]) =>
           div(
