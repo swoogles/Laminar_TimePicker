@@ -6,7 +6,7 @@ I just love Laminar and want to make it easier for people to experiment with it!
 
 To use:
 ```scala
-libraryDependencies += "com.billdingsoftware" %%% "timepicker" % "0.1.7"
+libraryDependencies += "com.billdingsoftware" %%% "timepicker" % "0.2.1"
 ```
 
 The simplest use-case is:
@@ -43,8 +43,3 @@ You can also drop in custom up/down button elements via:
     decrementRep = span("Dec")
   )
 ```
-
-TODOs:
-- 24 hour display mode
-- Adjustable increments. Hardcoded to 5 minutes currently.
-- A hundred other things
