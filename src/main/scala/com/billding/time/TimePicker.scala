@@ -1,6 +1,7 @@
 package com.billding.time
 
 import com.raquo.laminar.api.L._
+import animus._
 
 case class TimePicker[T](
   component: Div,
@@ -40,14 +41,15 @@ object TimePicker {
     TimePicker(
       div(
         cls := "time-picker",
-        wheel($signal = timeVar.signal.map(_.hours),
+        wheelAnimated(
+          $signal = timeVar.signal.map(_.hours.toString.split("").toList),
           updater = updater,
           delta = 60,
           incrementRep,
           decrementRep)
           .amend(cls("hour")),
         phauxWheel(),
-        wheel($signal = timeVar.signal.map(_.paddedMinutes),
+        wheelAnimated($signal = timeVar.signal.map(_.paddedMinutes.split("").toList),
           updater = updater,
           delta = minuteDelta,
           incrementRep,
@@ -56,7 +58,7 @@ object TimePicker {
 
         initialTimeTyped.hourNotation match {
           case HourNotation.Twelve =>
-            wheel($signal = timeVar.signal.map(_.dayTime),
+            wheelAnimated($signal = timeVar.signal.map(dayTime => List(dayTime.dayTime)),
               updater = updater,
               delta = 60 * 12,
               incrementRep,
@@ -200,6 +202,34 @@ object TimePicker {
       div(
         cls := "tp-display",
         child <-- $signal.map(_.toString),
+      ),
+      button(
+        cls := "tp-dec",
+        onClick.mapTo(-delta) --> updater,
+        downButtonRep,
+      ),
+    )
+
+  private def wheelAnimated(
+                     $signal: Signal[List[String]],
+                     updater: Int => Unit,
+                     delta: Int,
+                     upButtonRep: HtmlElement,
+                     downButtonRep: HtmlElement,
+                   ): Div =
+    div(
+      cls("wheel"),
+      button(
+        cls(
+          "tp-inc",
+        ),
+        onClick.mapTo(delta) --> updater,
+        upButtonRep,
+      ),
+      div(
+        cls := "tp-display",
+        AnimatedTicker($signal),
+//        child <-- $signal.map(_.toString),
       ),
       button(
         cls := "tp-dec",

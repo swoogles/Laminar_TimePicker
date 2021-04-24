@@ -1,5 +1,5 @@
 name := "TimePicker"
-version := "0.2.2"
+version := "0.2.3"
 organization := "com.billdingsoftware"
 
 enablePlugins(ScalaJSPlugin)
@@ -11,6 +11,7 @@ libraryDependencies ++= Seq(
   "com.raquo" %%% "laminar" % "0.12.1",
   "com.raquo" %%% "airstream" % "0.12.0",
   "org.scala-js" %%% "scalajs-dom" % "1.1.0",
+  "io.github.kitlangton" %%% "animus" % "0.1.5",
   "com.lihaoyi" %%% "utest" % "0.7.5" % "test"
 )
 
