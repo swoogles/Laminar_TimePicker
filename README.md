@@ -6,7 +6,7 @@ I just love Laminar and want to make it easier for people to experiment with it!
 
 To use:
 ```scala
-libraryDependencies += "com.billdingsoftware" %%% "timepicker" % "0.2.1"
+libraryDependencies += "com.billdingsoftware" %%% "timepicker" % "0.2.3"
 ```
 
 The simplest use-case is:
