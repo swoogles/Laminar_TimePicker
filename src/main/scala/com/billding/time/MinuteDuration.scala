@@ -40,7 +40,7 @@ object MinuteDuration {
     b: WallTime,
   ) =
     MinuteDuration(
-      Minutes(
+      Minutes.safe(
         math.abs(a.localTime.value - b.localTime.value).toInt,
       ),
     )
@@ -48,7 +48,7 @@ object MinuteDuration {
   def ofMinutes(
     minutes: Int,
   ) =
-    new MinuteDuration(Minutes(minutes))
+    new MinuteDuration(Minutes.safe(minutes))
 
   class DurationFriendlyInt(
     int: Int) {
