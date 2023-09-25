@@ -10,14 +10,11 @@ object App {
   def main(
     args: Array[String],
   ): Unit =
-    ???
-//    documentEvents(_.onDomContentLoaded.mapToEvent --> {
-//      _ =>
-//        val appElement =
-//          div(
-//            h1("Hello TimePicker!!"),
-//            TimeShit.body,
-//          )
-//        render(dom.document.querySelector("#laminarApp"), appElement)
-//    })(unsafeWindowOwner)
+
+    val appElement =
+      div(
+        h1("Hello TimePicker!!"),
+        TimeShit.body,
+      )
+    renderOnDomContentLoaded(dom.document.querySelector("#laminarApp"), appElement)
 }

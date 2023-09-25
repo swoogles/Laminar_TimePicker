@@ -65,7 +65,14 @@ object TimePicker {
               decrementRep)
               .amend(cls("amOrPm"))
           case HourNotation.TwentyFour => div()
-        }
+        },
+//        windowEvents(_.onLoad).foreach {
+//          _ => timeVar.update(_.plusMinutes(60))
+//        }(unsafeWindowOwner),
+//        onLoad --> Observer {
+//          _ => println("Loaded!!")
+//        }
+//        onMountCallback(ctx => timeVar.update(_.plusMinutes(60)))
       ),
       timeVar.signal.map(time => typer(time.toEUString)),
     )

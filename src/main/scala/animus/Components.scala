@@ -1,7 +1,8 @@
 package animus
 
-import com.raquo.laminar.api.L._
+import com.raquo.laminar.api.L.*
 
+import scala.concurrent.Future
 import scala.language.implicitConversions
 import scala.util.Random
 
@@ -17,12 +18,14 @@ case class AnimatedTicker($count: Signal[List[String]]) extends Component {
   private def indexer[A] (value1: List[A]) =
     value1.reverse.zipWithIndex.reverse
 
+//  $count.compose(Signal.from)
   val $segments: Signal[List[(String, Int)]] =
     $count.map(indexer)
 
   override def body: HtmlElement =
     div(
       display.flex,
+      // I have no idea what's going on in the next 5 lines
       children <-- $segments.splitTransition(_._2) { case (_, _, signal, t0) =>
         div(
           children <-- signal
