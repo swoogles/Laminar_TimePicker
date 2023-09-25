@@ -36,6 +36,7 @@ object TimePicker {
               ): TimePicker[T] = {
     val initialTimeTyped = WallTime(initialTime)
     val timeVar: Var[WallTime] = Var(initialTimeTyped)
+    var componentLoaded = Var(false)
     val updater =
       (minutes: Int) => timeVar.update(_.plusMinutes(minutes))
     TimePicker(
@@ -69,9 +70,18 @@ object TimePicker {
 //        windowEvents(_.onLoad).foreach {
 //          _ => timeVar.update(_.plusMinutes(60))
 //        }(unsafeWindowOwner),
-//        onLoad --> Observer {
-//          _ => println("Loaded!!")
-//        }
+        onMouseOver --> Observer {
+          _ =>
+            if (! componentLoaded.now())
+            // Super ugly way to update all slots
+              timeVar.update(_.plusMinutes(720))
+              timeVar.update(_.plusMinutes(60))
+              timeVar.update(_.plusMinutes(25))
+              timeVar.update(_.plusMinutes(35))
+              timeVar.update(_.plusMinutes(600))
+              componentLoaded.update(_ => true)
+              println("Loaded!!")
+        }
 //        onMountCallback(ctx => timeVar.update(_.plusMinutes(60)))
       ),
       timeVar.signal.map(time => typer(time.toEUString)),
