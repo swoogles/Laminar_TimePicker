@@ -27,14 +27,14 @@ object TimeShit {
       TimePicker("03:00 PM", minuteDelta = 5) match {
         case TimePicker(component: Div, time: Signal[WallTime]) =>
           div(
-            child.text <-- time.map("Exposed time: " + _),
+            child.text <-- time.map("Exposed time: " + _.toDumbAmericanString),
             component,
           )
       },
       TimePicker("15:00", minuteDelta = 15) match {
         case TimePicker(component: Div, time: Signal[WallTime]) =>
           div(
-            child.text <-- time.map("Exposed time: " + _),
+            child.text <-- time.map("Exposed time: " + _.toDumbAmericanString),
             component,
           )
       },

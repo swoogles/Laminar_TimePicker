@@ -70,7 +70,13 @@ object TimePicker {
 //        windowEvents(_.onLoad).foreach {
 //          _ => timeVar.update(_.plusMinutes(60))
 //        }(unsafeWindowOwner),
-        onMouseOver --> Observer {
+        documentEvents(_.onDomContentLoaded).map(_ => println("dom loaded")) --> Observer{
+          _ =>
+            println("Loaded component!")
+            timeVar.update(_.plusMinutes(1))
+
+        },
+        onMountCallback{
           _ =>
             if (! componentLoaded.now())
             // Super ugly way to update all slots
@@ -80,7 +86,7 @@ object TimePicker {
               timeVar.update(_.plusMinutes(35))
               timeVar.update(_.plusMinutes(600))
               componentLoaded.update(_ => true)
-              println("Loaded!!")
+              println("Loaded on mouseover")
         }
 //        onMountCallback(ctx => timeVar.update(_.plusMinutes(60)))
       ),

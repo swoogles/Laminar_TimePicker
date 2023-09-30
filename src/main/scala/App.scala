@@ -15,6 +15,9 @@ object App {
       div(
         h1("Hello TimePicker."),
         TimeShit.body,
+        onLoad --> Observer {
+          _ => println("Loaded app")
+        }
       )
     renderOnDomContentLoaded(dom.document.querySelector("#laminarApp"), appElement)
 }

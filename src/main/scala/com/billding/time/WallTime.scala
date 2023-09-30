@@ -65,6 +65,13 @@ case class WallTime private (
     else
       DayTime.AM.toString
 
+  def roundToNextFive(): WallTime =
+    if (minutes % 5 == 0)
+      this
+    else
+      plusMinutes(1).roundToNextFive()
+
+
   def isBefore(
     wallTime: WallTime,
   ) =

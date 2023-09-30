@@ -1,5 +1,5 @@
 name := "TimePicker"
-version := "0.3.5"
+version := "0.3.8"
 organization := "com.billdingsoftware"
 
 enablePlugins(ScalaJSPlugin)
