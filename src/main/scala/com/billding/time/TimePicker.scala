@@ -70,12 +70,6 @@ object TimePicker {
 //        windowEvents(_.onLoad).foreach {
 //          _ => timeVar.update(_.plusMinutes(60))
 //        }(unsafeWindowOwner),
-        documentEvents(_.onDomContentLoaded).map(_ => println("dom loaded")) --> Observer{
-          _ =>
-            println("Loaded component!")
-            timeVar.update(_.plusMinutes(1))
-
-        },
         onMountCallback{
           _ =>
             if (! componentLoaded.now())
