@@ -181,6 +181,9 @@ case class WallTime private (
 }
 
 object WallTime {
+  def fromMinutes(m: Int) =
+    WallTime(Minutes.safe(m), HourNotation.Twelve)
+
   def apply(
     raw: String,
   ): WallTime =
